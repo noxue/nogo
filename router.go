@@ -7,6 +7,6 @@ import (
 type Router struct {
 }
 
-func (r *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (router *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 }
