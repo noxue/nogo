@@ -6,5 +6,6 @@ import (
 )
 
 func Run() {
-	http.ListenAndServe("/", &Router{})
+	var router Router
+	http.ListenAndServe(":8888", &router)
 }
