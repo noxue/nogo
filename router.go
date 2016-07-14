@@ -5,9 +5,18 @@ import (
 	"net/http"
 )
 
-type Router struct {
+type router struct {
+	config config
 }
 
-func (router *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func NewRouter() router {
+
+	var r router
+	r.config = NewConfig()
+
+	return r
+}
+
+func (router *router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(r)
 }

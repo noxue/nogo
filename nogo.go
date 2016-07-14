@@ -5,7 +5,12 @@ import (
 	"net/http"
 )
 
+func init() {
+
+}
+
 func Run() {
-	var router Router
+	var router router
+
 	http.ListenAndServe(":8888", &router)
 }
