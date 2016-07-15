@@ -9,5 +9,7 @@
 >)
 >
 >func main() {
+>
 >	nogo.Run()
+>
 >}
