@@ -1,7 +1,10 @@
 package nogo
 
 import (
+	"bufio"
 	"fmt"
+	"io"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -13,7 +16,7 @@ type config struct {
 
 func NewConfig() config {
 	var c config
-	c.files = make([]string, 5, 5)
+	//c.files = make([]string, 5, 5)
 	c.config = make(map[string]string)
 	return c
 }
@@ -24,13 +27,37 @@ func (config *config) AddFile(file string) {
 }
 
 //从配置列表中读取所有的配置到config中
-func (config *config) ReadAllConfig() {
+func (config *config) ReadAllConfig() error {
 
-	for v := range config.files {
+	for k, v := range config.files {
 
-		fmt.Println(v)
+		fmt.Println(k, v)
+
+		f, err := os.Open(v)
+
+		if err != nil {
+			continue
+		}
+
+		buf := bufio.NewReader(f)
+
+		for {
+			line, err := buf.ReadString('\n')
+			if err != nil {
+				if err == io.EOF {
+					return nil
+				}
+				return err
+			}
+
+			line = strings.TrimSpace(line)
+
+			fmt.Println(line)
+		}
 
 	}
+
+	return nil
 }
 
 //获取配置值
