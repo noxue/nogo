@@ -10,7 +10,7 @@ func init() {
 }
 
 func Run() {
-	var router router
+	router := NewRouter()
 
 	http.ListenAndServe(":8888", &router)
 }
