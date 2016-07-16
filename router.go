@@ -6,13 +6,13 @@ import (
 )
 
 type router struct {
-	config config
+	config *config
 }
 
-func NewRouter() router {
+func newRouter() *router {
 
-	var r router
-	r.config = NewConfig()
+	r := new(router)
+	r.config = newConfig()
 
 	return r
 }

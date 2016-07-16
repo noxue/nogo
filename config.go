@@ -14,15 +14,16 @@ type config struct {
 	config map[string]string //配置内容map
 }
 
-func NewConfig() config {
-	var c config
-	//c.files = make([]string, 5, 5)
+func newConfig() *config {
+	c := new(config)
+	c.files = make([]string, 0)
 	c.config = make(map[string]string)
 	return c
 }
 
 //添加配置文件到文件列表
 func (config *config) AddFile(file string) {
+	file = strings.TrimSpace(file)
 	config.files = append(config.files, file)
 }
 
@@ -35,7 +36,9 @@ func (config *config) ReadAllConfig() error {
 
 		f, err := os.Open(v)
 
+		//打开失败的话，继续打开下一个配置文件
 		if err != nil {
+
 			continue
 		}
 
@@ -45,14 +48,27 @@ func (config *config) ReadAllConfig() error {
 			line, err := buf.ReadString('\n')
 			if err != nil {
 				if err == io.EOF {
-					return nil
+					//如果读取玩了一个配置文件，退出内层循环
+					break
 				}
+				//如果是其他错误，返回错误信息给调用者
 				return err
 			}
 
 			line = strings.TrimSpace(line)
 
-			fmt.Println(line)
+			//如果第一个字符是# 当作注释，不处理
+			if len(line) > 0 && line[0] == '#' {
+				continue
+			}
+
+			strs := strings.SplitN(line, "=", 2)
+			if len(strs) == 2 {
+				config.setString(strings.TrimSpace(strs[0]), strings.TrimSpace(strs[1]))
+			} else {
+				LogPrintln("配置格式出错:" + line)
+			}
+
 		}
 
 	}
@@ -60,8 +76,13 @@ func (config *config) ReadAllConfig() error {
 	return nil
 }
 
+//设置值
+func (config *config) setString(k, v string) {
+	config.config[k] = strings.TrimSpace(v)
+}
+
 //获取配置值
-func (config *config) GetString(key string) string {
+func (config *config) getString(key string) string {
 	for k, v := range config.config {
 		if key == k {
 			return strings.TrimSpace(v)
@@ -70,8 +91,8 @@ func (config *config) GetString(key string) string {
 	return ""
 }
 
-func (config *config) GetInt(key string) int {
-	v := config.GetString(key)
+func (config *config) getInt(key string) int {
+	v := config.getString(key)
 	if v != "" {
 		iv, err := strconv.Atoi(v)
 		if err != nil {

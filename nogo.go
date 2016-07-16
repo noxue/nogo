@@ -5,19 +5,34 @@ import (
 	"net/http"
 )
 
+type nogo struct {
+	router *router
+}
+
+func (nogo *nogo) AddConfig(file string) {
+	nogo.router.config.AddFile(file)
+}
+
+func NewNogo() *nogo {
+	nogo := new(nogo)
+	nogo.router = newRouter()
+
+	nogo.AddConfig("config/app.conf")
+
+	return nogo
+}
+
 func init() {
 
 }
 
-func Run() {
-	router := NewRouter()
-	router.config.AddFile("config.conf")
-	router.config.AddFile("config1.conf")
-	router.config.AddFile("config2.conf")
-	router.config.AddFile("config3.conf")
-	router.config.AddFile("config4.conf")
-	router.config.AddFile("config5.conf")
-	router.config.ReadAllConfig()
+func (nogo *nogo) Run() {
 
-	http.ListenAndServe(":8888", &router)
+	nogo.router.config.ReadAllConfig()
+
+	LogPrintln("Nogo成功启动")
+	err := http.ListenAndServe(nogo.router.config.getString("listen"), nogo.router)
+	if err != nil {
+		LogFatalln(err.Error())
+	}
 }
