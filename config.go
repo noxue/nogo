@@ -78,13 +78,13 @@ func (config *config) ReadAllConfig() error {
 
 //设置值
 func (config *config) setString(k, v string) {
-	config.config[k] = strings.TrimSpace(v)
+	config.config[k] = strings.ToLower(strings.TrimSpace(v))
 }
 
 //获取配置值
 func (config *config) getString(key string) string {
 	for k, v := range config.config {
-		if key == k {
+		if strings.ToLower(key) == k {
 			return strings.TrimSpace(v)
 		}
 	}

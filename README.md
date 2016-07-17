@@ -13,3 +13,9 @@
 >	nogo.Run()
 >
 >}
+
+
+/user/{username}-{uid}.html
+
+
+

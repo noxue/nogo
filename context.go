@@ -4,7 +4,7 @@ import (
 	"net/http"
 )
 
-type Context struct {
+type Ctx struct {
 	ResponseWriter http.ResponseWriter
 	Request        *http.Request
 }
